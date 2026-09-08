@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nask VPN</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body style="margin:0;padding:0;font-family:sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;">
     <div style="max-width:480px;margin:0 auto;padding:20px;">
@@ -15,87 +14,51 @@
         
         <div style="background:#1a1a1a;border-radius:16px;padding:20px;margin-bottom:16px;">
             <h3 style="margin:0 0 12px 0;">🎁 Пробный период</h3>
-            <div id="plan_trial" onclick="selectPlan('trial')" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;cursor:pointer;border:2px solid transparent;">
+            <button onclick="activate('trial')" style="width:100%;display:flex;justify-content:space-between;padding:14px;background:#222;border:none;border-radius:12px;cursor:pointer;color:#fff;font-size:16px;">
                 <span>1 день</span>
                 <span style="color:#667eea;">Бесплатно</span>
-            </div>
+            </button>
         </div>
         
         <div style="background:#1a1a1a;border-radius:16px;padding:20px;margin-bottom:16px;">
             <h3 style="margin:0 0 12px 0;">📅 Подписка</h3>
-            <div id="plan_1_month" onclick="selectPlan('1_month')" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;margin-bottom:8px;cursor:pointer;border:2px solid transparent;">
+            <button onclick="activate('1_month')" style="width:100%;display:flex;justify-content:space-between;padding:14px;background:#222;border:none;border-radius:12px;margin-bottom:8px;cursor:pointer;color:#fff;font-size:16px;">
                 <span>1 месяц</span>
                 <span style="color:#667eea;">50 ⭐</span>
-            </div>
-            <div id="plan_3_months" onclick="selectPlan('3_months')" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;margin-bottom:8px;cursor:pointer;border:2px solid transparent;">
+            </button>
+            <button onclick="activate('3_months')" style="width:100%;display:flex;justify-content:space-between;padding:14px;background:#222;border:none;border-radius:12px;margin-bottom:8px;cursor:pointer;color:#fff;font-size:16px;">
                 <span>3 месяца (−35%)</span>
                 <span style="color:#667eea;">100 ⭐</span>
-            </div>
-            <div id="plan_6_months" onclick="selectPlan('6_months')" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;margin-bottom:8px;cursor:pointer;border:2px solid transparent;">
+            </button>
+            <button onclick="activate('6_months')" style="width:100%;display:flex;justify-content:space-between;padding:14px;background:#222;border:none;border-radius:12px;margin-bottom:8px;cursor:pointer;color:#fff;font-size:16px;">
                 <span>6 месяцев (−50%)</span>
                 <span style="color:#667eea;">150 ⭐</span>
-            </div>
-            <div id="plan_12_months" onclick="selectPlan('12_months')" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;cursor:pointer;border:2px solid transparent;">
+            </button>
+            <button onclick="activate('12_months')" style="width:100%;display:flex;justify-content:space-between;padding:14px;background:#222;border:none;border-radius:12px;cursor:pointer;color:#fff;font-size:16px;">
                 <span>12 месяцев (−67%)</span>
                 <span style="color:#667eea;">200 ⭐</span>
-            </div>
+            </button>
         </div>
-        
-        <button id="btn" onclick="activate()" disabled style="width:100%;padding:14px;background:#667eea;border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:600;opacity:0.5;cursor:pointer;">
-            Выберите тариф
-        </button>
         
         <div style="text-align:center;color:#999;margin-top:20px;">
             💬 Поддержка: @NaskSupport
         </div>
     </div>
     
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        const telegram = window.Telegram.WebApp;
-        telegram.ready();
-        telegram.expand();
-        
-        let selectedPlan = null;
-        
-        function selectPlan(planId) {
-            selectedPlan = planId;
-            
-            // Убираем выделение со всех
-            document.querySelectorAll('[id^="plan_"]').forEach(el => {
-                el.style.border = '2px solid transparent';
-            });
-            
-            // Выделяем выбранный
-            const selectedEl = document.getElementById('plan_' + planId);
-            if (selectedEl) {
-                selectedEl.style.border = '2px solid #667eea';
+        function activate(planId) {
+            if (!window.Telegram || !window.Telegram.WebApp) {
+                alert('Telegram WebApp не загружен');
+                return;
             }
             
-            // Активируем кнопку
-            const btn = document.getElementById('btn');
-            btn.disabled = false;
-            btn.style.opacity = '1';
-            
-            const names = {
-                'trial': '🎁 Пробный (1 день)',
-                '1_month': '📅 1 месяц',
-                '3_months': '📅 3 месяца',
-                '6_months': '📅 6 месяцев',
-                '12_months': '📅 12 месяцев'
-            };
-            
-            btn.textContent = 'Активировать: ' + (names[planId] || planId);
-        }
-        
-        function activate() {
-            if (!selectedPlan) return;
-            
             const data = JSON.stringify({
-                plan_id: selectedPlan
+                plan_id: planId
             });
             
-            // Отправляем данные в бота
-            telegram.sendData(data);
+            window.Telegram.WebApp.sendData(data);
+            window.Telegram.WebApp.close();
         }
     </script>
 </body>
