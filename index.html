@@ -15,7 +15,7 @@
         
         <div style="background:#1a1a1a;border-radius:16px;padding:20px;margin-bottom:16px;">
             <h3 style="margin:0 0 12px 0;">🎁 Пробный период</h3>
-            <div onclick="selectPlan('trial', this)" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;cursor:pointer;">
+            <div id="plan_trial" onclick="selectPlan('trial')" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;cursor:pointer;border:2px solid transparent;">
                 <span>1 день</span>
                 <span style="color:#667eea;">Бесплатно</span>
             </div>
@@ -23,25 +23,25 @@
         
         <div style="background:#1a1a1a;border-radius:16px;padding:20px;margin-bottom:16px;">
             <h3 style="margin:0 0 12px 0;">📅 Подписка</h3>
-            <div onclick="selectPlan('1_month', this)" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;margin-bottom:8px;cursor:pointer;">
+            <div id="plan_1_month" onclick="selectPlan('1_month')" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;margin-bottom:8px;cursor:pointer;border:2px solid transparent;">
                 <span>1 месяц</span>
                 <span style="color:#667eea;">50 ⭐</span>
             </div>
-            <div onclick="selectPlan('3_months', this)" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;margin-bottom:8px;cursor:pointer;">
+            <div id="plan_3_months" onclick="selectPlan('3_months')" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;margin-bottom:8px;cursor:pointer;border:2px solid transparent;">
                 <span>3 месяца (−35%)</span>
                 <span style="color:#667eea;">100 ⭐</span>
             </div>
-            <div onclick="selectPlan('6_months', this)" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;margin-bottom:8px;cursor:pointer;">
+            <div id="plan_6_months" onclick="selectPlan('6_months')" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;margin-bottom:8px;cursor:pointer;border:2px solid transparent;">
                 <span>6 месяцев (−50%)</span>
                 <span style="color:#667eea;">150 ⭐</span>
             </div>
-            <div onclick="selectPlan('12_months', this)" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;cursor:pointer;">
+            <div id="plan_12_months" onclick="selectPlan('12_months')" style="display:flex;justify-content:space-between;padding:14px;background:#222;border-radius:12px;cursor:pointer;border:2px solid transparent;">
                 <span>12 месяцев (−67%)</span>
                 <span style="color:#667eea;">200 ⭐</span>
             </div>
         </div>
         
-        <button id="btn" onclick="activate()" disabled style="width:100%;padding:14px;background:#667eea;border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:600;opacity:0.5;">
+        <button id="btn" onclick="activate()" disabled style="width:100%;padding:14px;background:#667eea;border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:600;opacity:0.5;cursor:pointer;">
             Выберите тариф
         </button>
         
@@ -51,29 +51,32 @@
     </div>
     
     <script>
-        let tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+        const telegram = window.Telegram.WebApp;
+        telegram.ready();
+        telegram.expand();
         
-        let selected = null;
+        let selectedPlan = null;
         
-        function selectPlan(planId, element) {
-            selected = planId;
+        function selectPlan(planId) {
+            selectedPlan = planId;
             
-            // Убираем выделение
-            document.querySelectorAll('[onclick^="selectPlan"]').forEach(el => {
-                el.style.border = 'none';
+            // Убираем выделение со всех
+            document.querySelectorAll('[id^="plan_"]').forEach(el => {
+                el.style.border = '2px solid transparent';
             });
             
             // Выделяем выбранный
-            element.style.border = '2px solid #667eea';
+            const selectedEl = document.getElementById('plan_' + planId);
+            if (selectedEl) {
+                selectedEl.style.border = '2px solid #667eea';
+            }
             
             // Активируем кнопку
-            let btn = document.getElementById('btn');
+            const btn = document.getElementById('btn');
             btn.disabled = false;
             btn.style.opacity = '1';
             
-            let names = {
+            const names = {
                 'trial': '🎁 Пробный (1 день)',
                 '1_month': '📅 1 месяц',
                 '3_months': '📅 3 месяца',
@@ -81,19 +84,18 @@
                 '12_months': '📅 12 месяцев'
             };
             
-            btn.textContent = 'Активировать: ' + names[planId];
+            btn.textContent = 'Активировать: ' + (names[planId] || planId);
         }
         
         function activate() {
-            if (!selected) return;
+            if (!selectedPlan) return;
             
-            let data = JSON.stringify({plan_id: selected});
+            const data = JSON.stringify({
+                plan_id: selectedPlan
+            });
             
-            // Отправляем данные
-            tg.sendData(data);
-            
-            // Закрываем
-            tg.close();
+            // Отправляем данные в бота
+            telegram.sendData(data);
         }
     </script>
 </body>
