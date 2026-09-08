@@ -4,61 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nask VPN</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-<body style="margin:0;padding:0;font-family:sans-serif;background:#0a0a0a;color:#fff;min-height:100vh;">
+<body style="margin:0;padding:0;font-family:sans-serif;background:#0a0a0a;color:#fff;">
     <div style="max-width:480px;margin:0 auto;padding:20px;">
-        <div style="text-align:center;padding:20px 0;">
-            <div style="font-size:32px;font-weight:700;color:#667eea;">Nask VPN</div>
-            <div style="color:#999;margin-top:8px;">Быстрый и безопасный VPN</div>
-        </div>
+        <h2 style="text-align:center;color:#667eea;">Nask VPN</h2>
         
-        <div style="background:#1a1a1a;border-radius:16px;padding:20px;margin-bottom:16px;">
-            <h3 style="margin:0 0 12px 0;">🎁 Пробный период</h3>
-            <button onclick="activate('trial')" style="width:100%;display:flex;justify-content:space-between;padding:14px;background:#222;border:none;border-radius:12px;cursor:pointer;color:#fff;font-size:16px;">
-                <span>1 день</span>
-                <span style="color:#667eea;">Бесплатно</span>
-            </button>
-        </div>
+        <p style="text-align:center;color:#999;margin-bottom:20px;">Выберите тариф:</p>
         
-        <div style="background:#1a1a1a;border-radius:16px;padding:20px;margin-bottom:16px;">
-            <h3 style="margin:0 0 12px 0;">📅 Подписка</h3>
-            <button onclick="activate('1_month')" style="width:100%;display:flex;justify-content:space-between;padding:14px;background:#222;border:none;border-radius:12px;margin-bottom:8px;cursor:pointer;color:#fff;font-size:16px;">
-                <span>1 месяц</span>
-                <span style="color:#667eea;">50 ⭐</span>
-            </button>
-            <button onclick="activate('3_months')" style="width:100%;display:flex;justify-content:space-between;padding:14px;background:#222;border:none;border-radius:12px;margin-bottom:8px;cursor:pointer;color:#fff;font-size:16px;">
-                <span>3 месяца (−35%)</span>
-                <span style="color:#667eea;">100 ⭐</span>
-            </button>
-            <button onclick="activate('6_months')" style="width:100%;display:flex;justify-content:space-between;padding:14px;background:#222;border:none;border-radius:12px;margin-bottom:8px;cursor:pointer;color:#fff;font-size:16px;">
-                <span>6 месяцев (−50%)</span>
-                <span style="color:#667eea;">150 ⭐</span>
-            </button>
-            <button onclick="activate('12_months')" style="width:100%;display:flex;justify-content:space-between;padding:14px;background:#222;border:none;border-radius:12px;cursor:pointer;color:#fff;font-size:16px;">
-                <span>12 месяцев (−67%)</span>
-                <span style="color:#667eea;">200 ⭐</span>
-            </button>
-        </div>
+        <a href="javascript:void(0)" onclick="choose('trial')" style="display:block;background:#1a1a1a;padding:15px;border-radius:10px;margin-bottom:10px;text-decoration:none;color:#fff;text-align:center;">
+            🎁 Пробный — 1 день (Бесплатно)
+        </a>
         
-        <div style="text-align:center;color:#999;margin-top:20px;">
-            💬 Поддержка: @NaskSupport
-        </div>
+        <a href="javascript:void(0)" onclick="choose('1_month')" style="display:block;background:#1a1a1a;padding:15px;border-radius:10px;margin-bottom:10px;text-decoration:none;color:#fff;text-align:center;">
+            📅 1 месяц — 50 ⭐
+        </a>
+        
+        <a href="javascript:void(0)" onclick="choose('3_months')" style="display:block;background:#1a1a1a;padding:15px;border-radius:10px;margin-bottom:10px;text-decoration:none;color:#fff;text-align:center;">
+            📅 3 месяца — 100 ⭐ (−35%)
+        </a>
+        
+        <a href="javascript:void(0)" onclick="choose('6_months')" style="display:block;background:#1a1a1a;padding:15px;border-radius:10px;margin-bottom:10px;text-decoration:none;color:#fff;text-align:center;">
+            📅 6 месяцев — 150 ⭐ (−50%)
+        </a>
+        
+        <a href="javascript:void(0)" onclick="choose('12_months')" style="display:block;background:#1a1a1a;padding:15px;border-radius:10px;margin-bottom:20px;text-decoration:none;color:#fff;text-align:center;">
+            📅 12 месяцев — 200 ⭐ (−67%)
+        </a>
+        
+        <p style="text-align:center;color:#999;">💬 @NaskSupport</p>
     </div>
     
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        function activate(planId) {
-            if (!window.Telegram || !window.Telegram.WebApp) {
-                alert('Telegram WebApp не загружен');
-                return;
+        console.log('Script loaded');
+        
+        function choose(planId) {
+            console.log('Plan selected: ' + planId);
+            
+            if (window.Telegram && window.Telegram.WebApp) {
+                console.log('Telegram WebApp available');
+                
+                window.Telegram.WebApp.sendData(
+                    JSON.stringify({plan_id: planId})
+                );
+                
+                console.log('Data sent');
+                
+                setTimeout(function() {
+                    window.Telegram.WebApp.close();
+                }, 500);
+            } else {
+                console.log('Telegram WebApp NOT available');
+                alert('Выбран тариф: ' + planId);
             }
-            
-            const data = JSON.stringify({
-                plan_id: planId
-            });
-            
-            window.Telegram.WebApp.sendData(data);
-            window.Telegram.WebApp.close();
         }
     </script>
 </body>
